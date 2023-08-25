@@ -9,8 +9,12 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ data }: { data: { time: string } }) {
-  const serverData = JSON.parse(data);
-
+  const [time, setTime] = useState<Date | null>(null);
+  useEffect(() => {
+      fetch('/api/time')
+      .then(res => res.json())
+      .then(json => setTime(new Date(json.time)));
+  }, []);
   return (
       <div className={styles.container}>
           <Head>
@@ -21,7 +25,12 @@ export default function Home({ data }: { data: { time: string } }) {
 
           <main className={styles.main}>
               <h1 className={styles.title}>
-                  Welcome to <a href="https://nextjs.org">Next.js! The time is {serverData.time}</a>
+              Welcome to{" "}
+              <a href="https://nextjs.org">
+                  Next.js!{" "}
+                  {time &&
+                  `The time is ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()}`}
+              </a>
               </h1>
 
         <p className={styles.description}>
